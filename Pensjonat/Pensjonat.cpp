@@ -53,6 +53,15 @@ public:
 
 private:
     void wyswietldostepnepokoje() {
+
+        ifstream test("dostepnepokoje.txt", ios::binary | ios::ate);
+        if (!test || test.tellg() == 0) {
+            cout << "Brak opisów do wyświetlenia" << endl;
+            wyswietlinfo();
+            return;
+        }
+        test.close();
+
         wifstream plik("dostepnepokoje.txt");
         plik.imbue(locale(locale::classic(), new codecvt_utf8_utf16<wchar_t>));
         wstring line;
@@ -73,6 +82,15 @@ private:
         wyswietlinfo();
     }
     void wyswietlzajetepokoje() {
+
+        ifstream test("zajetepokoje.txt", ios::binary | ios::ate);
+        if (!test || test.tellg() == 0) {
+            cout << "Brak opisów do wyświetlenia" << endl;
+            wyswietlinfo();
+            return;
+        }
+        test.close();
+
         wifstream plik("zajetepokoje.txt");
         plik.imbue(locale(locale::classic(), new codecvt_utf8_utf16<wchar_t>));
         wstring line;
@@ -92,18 +110,30 @@ private:
         wyswietlinfo();
     }
     void wyswietlopisypokoi() {
+
+        ifstream test("opisypokoi.txt", ios::binary | ios::ate);
+        if (!test || test.tellg() == 0) {
+            cout << "Brak opisów do wyświetlenia" << endl;
+            wyswietlinfo();
+            return;
+        }
+        test.close();
+
         wifstream plik("opisypokoi.txt");
         plik.imbue(locale(locale::classic(), new codecvt_utf8_utf16<wchar_t>));
-        wstring line;
-        if (plik.is_open()) {
-            while (getline(plik, line)) {
-                wcout << line << endl;
-            }
-            plik.close();
-        }
-        else {
+
+        if (!plik.is_open()) {
             wcout << L"Nie można otworzyć pliku!" << endl;
+            wyswietlinfo();
+            return;
         }
+
+        wstring line;
+        while (getline(plik, line)) {
+            wcout << line << endl;
+        }
+
+        plik.close();
         wyswietlinfo();
     }
     void dodawaniepokoju() {
