@@ -52,8 +52,8 @@ public:
     }
 
 private:
+   
     void wyswietldostepnepokoje() {
-
         ifstream test("dostepnepokoje.txt", ios::binary | ios::ate);
         if (!test || test.tellg() == 0) {
             cout << "Brak opisów do wyświetlenia" << endl;
@@ -70,8 +70,7 @@ private:
                 wcout << line << endl;
             }
             plik.close();
-        }
-        else {
+        } else {
             wcout << L"Nie można otworzyć pliku!" << endl;
         }
         wyswietlinfo();
@@ -81,8 +80,8 @@ private:
         cout << "dzialam2" << endl;
         wyswietlinfo();
     }
-    void wyswietlzajetepokoje() {
 
+    void wyswietlzajetepokoje() {
         ifstream test("zajetepokoje.txt", ios::binary | ios::ate);
         if (!test || test.tellg() == 0) {
             cout << "Brak opisów do wyświetlenia" << endl;
@@ -99,18 +98,18 @@ private:
                 wcout << line << endl;
             }
             plik.close();
-        }
-        else {
+        } else {
             wcout << L"Nie można otworzyć pliku!" << endl;
         }
         wyswietlinfo();
     }
+
     void usunrezerwacje() {
         cout << "dzialam4" << endl;
         wyswietlinfo();
     }
-    void wyswietlopisypokoi() {
 
+    void wyswietlopisypokoi() {
         ifstream test("opisypokoi.txt", ios::binary | ios::ate);
         if (!test || test.tellg() == 0) {
             cout << "Brak opisów do wyświetlenia" << endl;
@@ -136,42 +135,116 @@ private:
         plik.close();
         wyswietlinfo();
     }
+
     void dodawaniepokoju() {
         cout << "dzialam6" << endl;
         wyswietlinfo();
     }
+
     void usuwaniepkoju() {
         cout << "dzialam7" << endl;
         wyswietlinfo();
     }
     void wyswietlpokojevip() {
-        cout << "dzialam8" << endl;
+
+        ifstream test("dostepnepokojeVIP.txt", ios::binary | ios::ate);
+        if (!test || test.tellg() == 0) {
+            cout << "Brak dostępnych pokoi VIP do wyświetlenia" << endl;
+            wyswietlinfo();
+            return;
+        }
+        test.close();
+
+        wifstream plik("dostepnepokojeVIP.txt");
+        plik.imbue(locale(locale::classic(), new codecvt_utf8_utf16<wchar_t>));
+
+        wstring line;
+        if (plik.is_open()) {
+            while (getline(plik, line)) {
+                wcout << line << endl;
+            }
+            plik.close();
+        } else {
+            wcout << L"Nie można otworzyć pliku VIP!" << endl;
+        }
+
         wyswietlinfo();
     }
+
     void dodajpokojvip() {
         cout << "dzialam9" << endl;
         wyswietlinfo();
     }
+
     void usunpokojvip() {
         cout << "dzialam10" << endl;
         wyswietlinfo();
     }
+
     void wyswietlopisypokoivip() {
-        cout << "dzialam11" << endl;
+
+        ifstream test("opisypokoivip.txt", ios::binary | ios::ate);
+        if (!test || test.tellg() == 0) {
+            cout << "Brak opisów pokoi VIP" << endl;
+            wyswietlinfo();
+            return;
+        }
+        test.close();
+
+        wifstream plik("opisypokoivip.txt");
+        plik.imbue(locale(locale::classic(), new codecvt_utf8_utf16<wchar_t>));
+
+        if (!plik.is_open()) {
+            wcout << L"Nie można otworzyć pliku opisów VIP!" << endl;
+            wyswietlinfo();
+            return;
+        }
+
+        wstring line;
+        while (getline(plik, line)) {
+            wcout << line << endl;
+        }
+
+        plik.close();
         wyswietlinfo();
     }
+
     void zarezerwujpokojvip() {
         cout << "dzialam12" << endl;
         wyswietlinfo();
     }
+
     void usunrezerwacjepokojuvip() {
         cout << "dzialam13" << endl;
         wyswietlinfo();
     }
+
     void wyswietlzajetepokojevip() {
-        cout << "dzialam14" << endl;
+
+        ifstream test("zajetepokojeVIP.txt", ios::binary | ios::ate);
+        if (!test || test.tellg() == 0) {
+            cout << "Brak zajętych pokoi VIP" << endl;
+            wyswietlinfo();
+            return;
+        }
+        test.close();
+
+        wifstream plik("zajetepokojevip.txt");
+        plik.imbue(locale(locale::classic(), new codecvt_utf8_utf16<wchar_t>));
+
+        wstring line;
+        if (plik.is_open()) {
+            while (getline(plik, line)) {
+                wcout << line << endl;
+            }
+            plik.close();
+        } else {
+            wcout << L"Nie można otworzyć pliku zajętych VIP!" << endl;
+        }
+
         wyswietlinfo();
     }
+
     int koniec() {
         exit(0);
     }
@@ -183,6 +256,7 @@ int main() {
     wcout.imbue(locale(".UTF8"));
 
     wcout << L"Witamy w pensjonacie! Wpisz numer jednej z podanych opcji." << endl << endl;
+
     Pensjonat obiekt1;
     obiekt1.wyswietlinfo();
 
