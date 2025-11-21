@@ -147,7 +147,7 @@ private:
     }
     void wyswietlpokojevip() {
 
-        ifstream test("dostepnepokojeVIP.txt", ios::binary | ios::ate);
+        ifstream test("dostepnepokojevip.txt", ios::binary | ios::ate);
         if (!test || test.tellg() == 0) {
             cout << "Brak dostępnych pokoi VIP do wyświetlenia" << endl;
             wyswietlinfo();
@@ -155,7 +155,7 @@ private:
         }
         test.close();
 
-        wifstream plik("dostepnepokojeVIP.txt");
+        wifstream plik("dostepnepokojevip.txt");
         plik.imbue(locale(locale::classic(), new codecvt_utf8_utf16<wchar_t>));
 
         wstring line;
@@ -221,7 +221,7 @@ private:
 
     void wyswietlzajetepokojevip() {
 
-        ifstream test("zajetepokojeVIP.txt", ios::binary | ios::ate);
+        ifstream test("zajetepokojevip.txt", ios::binary | ios::ate);
         if (!test || test.tellg() == 0) {
             cout << "Brak zajętych pokoi VIP" << endl;
             wyswietlinfo();
