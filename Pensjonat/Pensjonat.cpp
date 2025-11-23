@@ -77,7 +77,110 @@ private:
     }
 
     void zarezerwujjedenzpokoi() {
-        cout << "dzialam2" << endl;
+        ifstream testPlik("dostepnepokoje.txt", ios::binary);
+        if (!testPlik) {
+            cout << "Brak dostępnych pokoi do rezerwacji (plik nie istnieje)." << endl;
+            wyswietlinfo();
+            return;
+        }
+        testPlik.seekg(0, ios::end);
+        long long rozmiar = testPlik.tellg();
+        if (rozmiar == 0) {
+            testPlik.close();
+            cout << "Brak dostępnych pokoi do rezerwacji (plik pusty)." << endl;
+            wyswietlinfo();
+            return;
+        }
+        testPlik.close();
+
+        ifstream in("dostepnepokoje.txt");
+        if (!in) {
+            cout << "Nie można otworzyć pliku z dostępnymi pokojami." << endl;
+            wyswietlinfo();
+            return;
+        }
+
+        vector<string> linie;
+        string tmp;
+        while (getline(in, tmp)) {
+            if (tmp != "") {
+                linie.push_back(tmp);
+            }
+        }
+        in.close();
+
+        int ile = (int)linie.size();
+        if (ile == 0) {
+            cout << "Brak dostępnych pokoi (po wczytaniu)." << endl;
+            wyswietlinfo();
+            return;
+        }
+
+        cout << "Dostępne pokoje:" << endl;
+        for (int i = 0; i < ile; ++i) {
+            cout << (i + 1) << ". " << linie[i] << endl;
+        }
+
+        cout << "Podaj numer pokoju, który chcesz zarezerwować: ";
+        int numerPokoju = 0;
+        if (!(cin >> numerPokoju)) {
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cout << "Nieprawidłowy numer." << endl;
+            wyswietlinfo();
+            return;
+        }
+
+        if (numerPokoju < 1 || numerPokoju > ile) {
+            cout << "Numer poza zakresem." << endl;
+            wyswietlinfo();
+            return;
+        }
+
+        cout << "Na ile dni chcesz zarezerwować pokój? ";
+        int iloscDni = 0;
+        if (!(cin >> iloscDni)) {
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cout << "Nieprawidłowa liczba dni." << endl;
+            wyswietlinfo();
+            return;
+        }
+        if (iloscDni <= 0) {
+            cout << "Liczba dni musi być większa od zera." << endl;
+            wyswietlinfo();
+            return;
+        }
+
+        string wybrany = linie[numerPokoju - 1];
+        vector<string> nowa;
+        for (int i = 0; i < ile; ++i) {
+            if (i != (numerPokoju - 1)) {
+                nowa.push_back(linie[i]);
+            }
+        }
+
+        ofstream out("dostepnepokoje.txt", ios::trunc);
+        if (!out) {
+            cout << "Błąd zapisu pliku z dostępnymi pokojami." << endl;
+            wyswietlinfo();
+            return;
+        }
+        for (int i = 0; i < (int)nowa.size(); ++i) {
+            out << nowa[i] << '\n';
+        }
+        out.close();
+
+        ofstream zajete("zajetepokoje.txt", ios::app);
+        if (!zajete) {
+            cout << "Błąd dopisania do pliku z zajętymi pokojami." << endl;
+            wyswietlinfo();
+            return;
+        }
+        zajete << wybrany << " - " << iloscDni << " dni" << '\n';
+        zajete.close();
+
+        cout << "Pokój został zarezerwowany i przeniesiony do zajętych pokoi." << endl;
         wyswietlinfo();
     }
 
@@ -105,7 +208,118 @@ private:
     }
 
     void usunrezerwacje() {
-        cout << "dzialam4" << endl;
+        ifstream testPlik("zajetepokoje.txt", ios::binary);
+        if (!testPlik) {
+            cout << "Brak rezerwacji do usunięcia (plik nie istnieje)." << endl;
+            wyswietlinfo();
+            return;
+        }
+        testPlik.seekg(0, ios::end);
+        long long rozmiar = testPlik.tellg();
+        if (rozmiar == 0) {
+            testPlik.close();
+            cout << "Brak rezerwacji do usunięcia (plik pusty)." << endl;
+            wyswietlinfo();
+            return;
+        }
+        testPlik.close();
+
+        ifstream pokaz("zajetepokoje.txt");
+        if (!pokaz) {
+            cout << "Nie można otworzyć pliku z rezerwacjami." << endl;
+            wyswietlinfo();
+            return;
+        }
+
+        string linia;
+        int licznik = 0;
+        cout << "Zajęte pokoje:" << endl;
+        while (getline(pokaz, linia)) {
+            if (linia != "") {
+                licznik = licznik + 1;
+                cout << licznik << ". " << linia << endl;
+            }
+        }
+        pokaz.close();
+
+        if (licznik == 0) {
+            cout << "Brak rezerwacji do wyświetlenia." << endl;
+            wyswietlinfo();
+            return;
+        }
+
+        cout << "Podaj numer rezerwacji, którą chcesz usunąć: ";
+        int numer = 0;
+        if (!(cin >> numer)) {
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cout << "Nieprawidłowy numer." << endl;
+            wyswietlinfo();
+            return;
+        }
+        if (numer < 1 || numer > licznik) {
+            cout << "Numer poza zakresem." << endl;
+            wyswietlinfo();
+            return;
+        }
+
+        ifstream czytaj("zajetepokoje.txt");
+        if (!czytaj) {
+            cout << "Nie można ponownie otworzyć pliku z rezerwacjami." << endl;
+            wyswietlinfo();
+            return;
+        }
+
+        string wynik = "";
+        string usuwana = "";
+        int obecny = 0;
+        while (getline(czytaj, linia)) {
+            if (linia == "") {
+                continue;
+            }
+            obecny = obecny + 1;
+            if (obecny == numer) {
+                usuwana = linia; 
+            } else {
+                wynik += linia;
+                wynik += '\n';
+            }
+        }
+        czytaj.close();
+
+        ofstream zapisz("zajetepokoje.txt", ios::trunc);
+        if (!zapisz) {
+            cout << "Błąd zapisu pliku z rezerwacjami." << endl;
+            wyswietlinfo();
+            return;
+        }
+        zapisz << wynik;
+        zapisz.close();
+
+        string nazwa = "";
+        int dl = (int)usuwana.length();
+        int i = 0;
+        while (i < dl) {
+            if (i + 2 < dl && usuwana[i] == ' ' && usuwana[i + 1] == '-' && usuwana[i + 2] == ' ') {
+                break;
+            }
+            nazwa += usuwana[i];
+            i = i + 1;
+        }
+        if (nazwa == "") {
+            nazwa = usuwana;
+        }
+
+        ofstream dost("dostepnepokoje.txt", ios::app);
+        if (!dost) {
+            cout << "Błąd dopisania do pliku z dostępnymi pokojami." << endl;
+            wyswietlinfo();
+            return;
+        }
+        dost << nazwa << '\n';
+        dost.close();
+
+        cout << "Rezerwacja usunięta. Pokój przywrócono do dostępnych." << endl;
         wyswietlinfo();
     }
 
