@@ -712,11 +712,117 @@ private:
         wyswietlinfo();
     }
 
-    void usunpokojvip() {
-        cout << "dzialam10" << endl;
+    void usuwaniepokojuvip() {
+    vector<string> dostepne;
+    vector<string> zajete;
+    string linia;
+
+    
+    ifstream fin("dostepnepokojevip.txt");
+    while (getline(fin, linia)) if (linia != "") dostepne.push_back(linia);
+    fin.close();
+
+    
+    ifstream fin2("zajetepokojevip.txt");
+    while (getline(fin2, linia)) if (linia != "") zajete.push_back(linia);
+    fin2.close();
+
+    cout << "Dostępne pokoje VIP:" << endl;
+    for (int i = 0; i < dostepne.size(); i++) 
+        cout << i + 1 << ". " << dostepne[i] << endl;
+
+    cout << "Zajęte pokoje VIP:" << endl;
+    for (int i = 0; i < zajete.size(); i++) 
+        cout << i + 1 << ". " << zajete[i] << endl;
+
+    if (dostepne.empty() && zajete.empty()) {
+        cout << "Brak pokoi VIP do usunięcia." << endl;
         wyswietlinfo();
+        return;
     }
 
+    cout << "Usunąć z (d)ostępnych VIP czy (z)ajętych VIP? ";
+    char wybor; 
+    cin >> wybor;
+
+    cout << "Podaj numer pokoju VIP do usunięcia: ";
+    int numer; 
+    cin >> numer;
+
+    string usunieta = "";
+
+  
+    if (wybor == 'd' || wybor == 'D') {
+        if (numer < 1 || numer > dostepne.size()) {
+            cout << "Błędny numer!" << endl;
+            wyswietlinfo();
+            return;
+        }
+        usunieta = dostepne[numer - 1];
+
+        ofstream out("dostepnepokojevip.txt", ios::trunc);
+        for (int i = 0; i < dostepne.size(); i++)
+            if (i != numer - 1) out << dostepne[i] << endl;
+        out.close();
+    }
+    
+    else {
+        if (numer < 1 || numer > zajete.size()) {
+            cout << "Błędny numer!" << endl;
+            wyswietlinfo();
+            return;
+        }
+        usunieta = zajete[numer - 1];
+
+        ofstream out("zajetepokojevip.txt", ios::trunc);
+        for (int i = 0; i < zajete.size(); i++)
+            if (i != numer - 1) out << zajete[i] << endl;
+        out.close();
+    }
+
+  
+    string numStr = "";
+    int i = 0;
+    while (i < usunieta.size() && !isdigit(usunieta[i])) i++;
+    int start = i;
+    while (i < usunieta.size() && isdigit(usunieta[i])) i++;
+    if (start < i) numStr = usunieta.substr(start, i - start);
+
+   
+    vector<string> all;
+    ifstream finOpis("opisypokoivip.txt");
+    while (getline(finOpis, linia)) all.push_back(linia);
+    finOpis.close();
+
+    int total = all.size();
+    int startLine = -1;
+
+    
+    for (int j = 0; j < total; j++) {
+        string l = all[j];
+        if (l.find(numStr + ".") == 0) { 
+            startLine = j; 
+            break; 
+        }
+    }
+
+    
+    if (startLine != -1) {
+        int q = startLine;
+        while (q < total && all[q] != "") q++;
+
+        vector<string> nowy;
+        for (int j = 0; j < startLine; j++) nowy.push_back(all[j]);
+        for (int j = q + 1; j < total; j++) nowy.push_back(all[j]);
+
+        ofstream outOpis("opisypokoivip.txt", ios::trunc);
+        for (auto& s : nowy) outOpis << s << endl;
+        outOpis.close();
+    }
+
+    cout << "Usunięto pokój VIP i jego opis (jeśli istniał). Numer: " << numStr << endl;
+    wyswietlinfo();
+}
     void wyswietlopisypokoivip() {
 
         ifstream test("opispokoivip.txt", ios::binary | ios::ate);
