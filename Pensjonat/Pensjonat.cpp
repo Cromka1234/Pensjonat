@@ -40,7 +40,7 @@ public:
         case 7: usuwaniepkoju(); break;
         case 8: wyswietlpokojevip(); break;
         case 9: dodajpokojvip(); break;
-        case 10: usunpokojvip(); break;
+        case 10: usuwaniepokojuvip(); break;
         case 11: wyswietlopisypokoivip(); break;
         case 12: zarezerwujpokojvip(); break;
         case 13: usunrezerwacjepokojuvip(); break;
